@@ -1,1 +1,307 @@
+Aquí tens **la versió final en Markdown completament llesta per lliurar**, clara, estructurada i professional.\
+La pots copiar directament al teu editor, exportar a PDF o entregar tal qual.
+
+***
+
+# **Memòria Tècnica – T02: Missió Apache**
+
+### **Desplegament Multidomini i Securitzat amb Apache2 sobre Ubuntu Server**
+
+***
+
+## **1. Introducció**
+
+L’empresa **Nexus**, dedicada a serveis de disseny i formació, necessita el desplegament inicial de la seva infraestructura web en un entorn controlat abans de migrar-la al núvol.\
+L’objectiu d’aquest projecte és:
+
+*   Allotjar dos portals web diferenciats en un únic servidor.
+*   Garantir la seguretat de totes les comunicacions mitjançant **SSL/TLS**.
+*   Millorar el rendiment utilitzant el protocol **HTTP/2**.
+*   Personalitzar errors i assegurar una configuració organitzada i neta.
+
+Aquest document recull **tots els passos realitzats**, amb explicacions clares aptes per a clients que no són experts tècnics.
+
+***
+
+# **2. Instal·lació i Configuració Base d’Apache**
+
+## **2.1 Instal·lació del servidor Apache**
+
+```bash
+sudo apt update
+sudo apt install apache2
+```
+
+## **2.2 Verificació del servei**
+
+```bash
+sudo systemctl status apache2
+```
+
+El servei ha d’aparèixer com: **active (running)**.
+
+## **2.3 Verificació de l’usuari www‑data**
+
+```bash
+grep www-data /etc/passwd
+```
+
+Aquest és l’usuari per defecte que executa Apache.
+
+## **2.4 Permisos de /var/www**
+
+```bash
+ls -ld /var/www
+sudo chown -R www-data:www-data /var/www
+sudo chmod -R 755 /var/www
+```
+
+Aquests permisos garanteixen un entorn segur però funcional.
+
+***
+
+# **3. Desplegament de VirtualHosts (Multidomini)**
+
+Els dos dominis a configurar són:
+
+*   **projectenexus17.test**
+*   **academia17.test**
+
+***
+
+## **3.1 Estructura de directoris**
+
+```bash
+sudo mkdir -p /var/www/projectenexus17.test/public_html
+sudo mkdir -p /var/www/academia17.test/public_html
+
+sudo chown -R www-data:www-data /var/www/*
+sudo chmod -R 755 /var/www
+```
+
+***
+
+## **3.2 Creació dels fitxers de VirtualHost**
+
+### **Fitxer: `/etc/apache2/sites-available/projectenexus17.test.conf`**
+
+```apache
+<VirtualHost *:80>
+    ServerName projectenexus17.test
+    DocumentRoot /var/www/projectenexus17.test/public_html
+
+    <Directory /var/www/projectenexus17.test/public_html>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/projectenexus17_error.log
+    CustomLog ${APACHE_LOG_DIR}/projectenexus17_access.log combined
+</VirtualHost>
+```
+
+### **Fitxer equivalent per academia17.test**
+
+***
+
+## **3.3 Activació dels VirtualHosts**
+
+```bash
+sudo a2ensite projectenexus17.test.conf
+sudo a2ensite academia17.test.conf
+sudo apachectl configtest
+sudo systemctl reload apache2
+```
+
+***
+
+## **3.4 Resolució local: modificació d’`/etc/hosts`**
+
+```bash
+sudo nano /etc/hosts
+```
+
+Afegint:
+
+    127.0.0.1   projectenexus17.test
+    127.0.0.1   academia17.test
+
+***
+
+# **4. Personalització de la Pàgina d’Error 404**
+
+## **4.1 Carpeta d’errors**
+
+```bash
+sudo mkdir -p /var/www/projectenexus17.test/public_html/errors
+```
+
+## **4.2 Creació del fitxer `404.html`**
+
+Ruta:
+
+    /var/www/projectenexus17.test/public_html/errors/404.html
+
+Contingut d’exemple professional:
+
+
+
+## **4.3 Associació al VirtualHost**
+
+Afegir:
+
+```apache
+ErrorDocument 404 /errors/404.html
+```
+
+Reinici:
+
+```bash
+sudo systemctl reload apache2
+```
+
+***
+
+# **5. Seguretat: HTTPS amb Certificat Autosignat**
+
+## **5.1 Habilitar SSL**
+
+```bash
+sudo a2enmod ssl
+sudo systemctl restart apache2
+```
+
+***
+
+## **5.2 Generació del certificat autosignat**
+
+```bash
+sudo openssl req -newkey rsa:2048 -nodes -keyout nexus.key \
+-x509 -days 365 -out nexus.crt
+```
+
+Els fitxers s’han de moure a:
+
+    /etc/ssl/certs/nexus.crt
+    /etc/ssl/private/nexus.key
+
+***
+
+## **5.3 Creació del VirtualHost HTTPS**
+
+### **Fitxer: `/etc/apache2/sites-available/projectenexus17.test-ssl.conf`**
+
+```apache
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+    ServerName projectenexus17.test
+    DocumentRoot /var/www/projectenexus17.test/public_html
+
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/nexus.crt
+    SSLCertificateKeyFile /etc/ssl/private/nexus.key
+
+    <Directory /var/www/projectenexus17.test/public_html>
+        Require all granted
+        AllowOverride All
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/projectenexus17_ssl_error.log
+    CustomLog ${APACHE_LOG_DIR}/projectenexus17_ssl_access.log combined
+</VirtualHost>
+</IfModule>
+```
+
+Activa’l:
+
+```bash
+sudo a2ensite projectenexus17.test-ssl.conf
+sudo systemctl reload apache2
+```
+
+***
+
+# **6. Redirecció Automàtica HTTP → HTTPS**
+
+Al VirtualHost de port 80:
+
+```apache
+Redirect permanent / https://projectenexus17.test/
+```
+
+Per l’altre domini:
+
+```apache
+Redirect permanent / https://academia17.test/
+```
+
+Recarregar:
+
+```bash
+sudo apachectl configtest
+sudo systemctl reload apache2
+```
+
+***
+
+# **7. Optimització amb HTTP/2**
+
+## **7.1 Activació del mòdul**
+
+```bash
+sudo a2enmod http2
+sudo systemctl restart apache2
+```
+
+## **7.2 Afegir la directiva als VirtualHost HTTPS**
+
+```apache
+Protocols h2 http/1.1
+```
+
+## **7.3 Verificació del protocol**
+
+### Amb curl:
+
+```bash
+curl -I --http2 https://projectenexus17.test
+```
+
+Si retorna:
+
+    HTTP/2 200
+
+→ *HTTP/2 està correctament habilitat.*
+
+***
+
+# **8. Proves de Funcionament**
+
+*   ✔ Apache instal·lat i funcionant
+*   ✔ Directoris separats i permisos correctes
+*   ✔ Dominis resolts via `/etc/hosts`
+*   ✔ Pàgina 404 personalitzada
+*   ✔ Certificat SSL autosignat funcional
+*   ✔ Accés segur per HTTPS
+*   ✔ Redirecció HTTP→HTTPS automàtica
+*   ✔ HTTP/2 actiu i verificat
+
+***
+
+# **9. Conclusions**
+
+El servidor Apache s’ha desplegat de manera segura, professional i optimitzada.\
+Els objectius del client s’han complert:
+
+*   Multidomini funcional
+*   Comunicacions xifrades
+*   Optimització amb protocols moderns
+*   Arquitectura organitzada
+*   Preparació per a un futur desplegament al núvol
+
+Aquesta infraestructura ofereix una base sòlida, segura i escalable per al creixement de Nexus.
+
+***
+
+Si vols, puc generar també **una versió en PDF**, **un índex automàtic**, o **un diagrama de la infraestructura**.
 
