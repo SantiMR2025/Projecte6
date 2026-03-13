@@ -57,7 +57,7 @@ ls -ld /var/www
 sudo chown -R www-data:www-data /var/www
 sudo chmod -R 755 /var/www
 ```
-![INSERIR CAPTURA](img/0008.png)
+![INSERIR CAPTURA](img/000.png)
 
 
 Aquests permisos garanteixen un entorn segur però funcional.
@@ -84,6 +84,7 @@ sudo mkdir -p /var/www/academia17.test/public_html
 sudo chown -R www-data:www-data /var/www/*
 sudo chmod -R 755 /var/www
 ```
+![INSERIR CAPTURA](img/0011.png)
 
 ***
 
