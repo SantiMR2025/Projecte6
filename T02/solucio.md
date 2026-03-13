@@ -107,6 +107,7 @@ sudo chmod -R 755 /var/www
 </VirtualHost>
 ```
 
+
 ### **Fitxer equivalent per academia17.test**
 
 ***
