@@ -37,6 +37,7 @@ sudo apt install apache2
 ```bash
 sudo systemctl status apache2
 ```
+![INSERIR CAPTURA](img/0001.png)
 
 El servei ha d’aparèixer com: **active (running)**.
 
@@ -45,6 +46,7 @@ El servei ha d’aparèixer com: **active (running)**.
 ```bash
 grep www-data /etc/passwd
 ```
+![INSERIR CAPTURA](img/0002.png)
 
 Aquest és l’usuari per defecte que executa Apache.
 
@@ -55,6 +57,8 @@ ls -ld /var/www
 sudo chown -R www-data:www-data /var/www
 sudo chmod -R 755 /var/www
 ```
+![INSERIR CAPTURA](img/0008.png)
+
 
 Aquests permisos garanteixen un entorn segur però funcional.
 
@@ -68,6 +72,8 @@ Els dos dominis a configurar són:
 *   **academia17.test**
 
 ***
+![INSERIR CAPTURA](img/0006.png)
+
 
 ## **3.1 Estructura de directoris**
 
