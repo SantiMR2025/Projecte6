@@ -72,7 +72,6 @@ Els dos dominis a configurar són:
 *   **academia17.test**
 
 ***
-![INSERIR CAPTURA](img/0006.png)
 
 
 ## **3.1 Estructura de directoris**
@@ -109,6 +108,7 @@ sudo chmod -R 755 /var/www
 
 
 ### **Fitxer equivalent per academia17.test**
+![INSERIR CAPTURA](img/0009.png)
 
 ***
 
@@ -120,6 +120,7 @@ sudo a2ensite academia17.test.conf
 sudo apachectl configtest
 sudo systemctl reload apache2
 ```
+![INSERIR CAPTURA](img/0010.png)
 
 ***
 
@@ -133,6 +134,8 @@ Afegint:
 
     127.0.0.1   projectenexus17.test
     127.0.0.1   academia17.test
+
+![INSERIR CAPTURA](img/0006.png)
 
 ***
 
@@ -152,7 +155,7 @@ Ruta:
 
 Contingut d’exemple professional:
 
-
+![INSERIR CAPTURA](img/0017.png)
 
 ## **4.3 Associació al VirtualHost**
 
