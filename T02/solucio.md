@@ -105,10 +105,10 @@ sudo chmod -R 755 /var/www
     CustomLog ${APACHE_LOG_DIR}/projectenexus17_access.log combined
 </VirtualHost>
 ```
-
+![INSERIR CAPTURA](img/0034.png)
 
 ### **Fitxer equivalent per academia17.test**
-![INSERIR CAPTURA](img/0009.png)
+![INSERIR CAPTURA](img/0034.png)
 
 ***
 
@@ -146,6 +146,7 @@ Afegint:
 ```bash
 sudo mkdir -p /var/www/projectenexus17.test/public_html/errors
 ```
+![INSERIR CAPTURA](img/0019.png)
 
 ## **4.2 Creació del fitxer `404.html`**
 
@@ -156,6 +157,7 @@ Ruta:
 Contingut d’exemple professional:
 
 ![INSERIR CAPTURA](img/0017.png)
+![INSERIR CAPTURA](img/0018.png)
 
 ## **4.3 Associació al VirtualHost**
 
@@ -164,6 +166,7 @@ Afegir:
 ```apache
 ErrorDocument 404 /errors/404.html
 ```
+![INSERIR CAPTURA](img/0020.png)
 
 Reinici:
 
@@ -181,6 +184,7 @@ sudo systemctl reload apache2
 sudo a2enmod ssl
 sudo systemctl restart apache2
 ```
+![INSERIR CAPTURA](img/0022.png)
 
 ***
 
@@ -190,11 +194,15 @@ sudo systemctl restart apache2
 sudo openssl req -newkey rsa:2048 -nodes -keyout nexus.key \
 -x509 -days 365 -out nexus.crt
 ```
+![INSERIR CAPTURA](img/0023.png)
+![INSERIR CAPTURA](img/0024.png)
 
 Els fitxers s’han de moure a:
 
     /etc/ssl/certs/nexus.crt
     /etc/ssl/private/nexus.key
+
+
 
 ***
 
@@ -222,6 +230,7 @@ Els fitxers s’han de moure a:
 </VirtualHost>
 </IfModule>
 ```
+![INSERIR CAPTURA](img/0025.png)
 
 Activa’l:
 
@@ -229,6 +238,7 @@ Activa’l:
 sudo a2ensite projectenexus17.test-ssl.conf
 sudo systemctl reload apache2
 ```
+![INSERIR CAPTURA](img/0026.png)
 
 ***
 
@@ -252,6 +262,7 @@ Recarregar:
 sudo apachectl configtest
 sudo systemctl reload apache2
 ```
+![INSERIR CAPTURA](img/0027.png)
 
 ***
 
@@ -263,6 +274,7 @@ sudo systemctl reload apache2
 sudo a2enmod http2
 sudo systemctl restart apache2
 ```
+![INSERIR CAPTURA](img/0028.png)
 
 ## **7.2 Afegir la directiva als VirtualHost HTTPS**
 
@@ -277,6 +289,7 @@ Protocols h2 http/1.1
 ```bash
 curl -I --http2 https://projectenexus17.test
 ```
+![INSERIR CAPTURA](img/0029.png)
 
 Si retorna:
 
@@ -285,68 +298,3 @@ Si retorna:
 → *HTTP/2 està correctament habilitat.*
 
 ***
-
-# **8. Proves de Funcionament**
-
-*   ✔ Apache instal·lat i funcionant
-*   ✔ Directoris separats i permisos correctes
-*   ✔ Dominis resolts via `/etc/hosts`
-*   ✔ Pàgina 404 personalitzada
-*   ✔ Certificat SSL autosignat funcional
-*   ✔ Accés segur per HTTPS
-*   ✔ Redirecció HTTP→HTTPS automàtica
-*   ✔ HTTP/2 actiu i verificat
-
-***
-
-# **9. Conclusions**
-
-El servidor Apache s’ha desplegat de manera segura, professional i optimitzada.\
-Els objectius del client s’han complert:
-
-*   Multidomini funcional
-*   Comunicacions xifrades
-*   Optimització amb protocols moderns
-*   Arquitectura organitzada
-*   Preparació per a un futur desplegament al núvol
-
-Aquesta infraestructura ofereix una base sòlida, segura i escalable per al creixement de Nexus.
-
-***
-
-![ img ](img/0001.png)
-![ img ](img/0002.png)
-![ img ](img/0003.png)
-![ img ](img/0004.png)
-![ img ](img/0005.png)
-![ img ](img/0006.png)
-![ img ](img/0007.png)
-![ img ](img/0008.png)
-![ img ](img/0009.png)
-![ img ](img/0010.png)
-![ img ](img/0011.png)
-![ img ](img/0012.png)
-![ img ](img/0013.png)
-![ img ](img/0014.png)
-![ img ](img/0015.png)
-![ img ](img/0016.png)
-![ img ](img/0017.png)
-![ img ](img/0019.png)
-![ img ](img/0020.png)
-![ img ](img/0021.png)
-![ img ](img/0022.png)
-![ img ](img/0023.png)
-![ img ](img/0024.png)
-![ img ](img/0025.png)
-![ img ](img/0026.png)
-![ img ](img/0027.png)
-![ img ](img/0028.png)
-![ img ](img/0029.png)
-![ img ](img/0030.png)
-![ img ](img/0031.png)
-![ img ](img/0032.png)
-![ img ](img/0033.png)
-![ img ](img/0034.png)
-![ img ](img/0035.png)
-![ img ](img/0036.png)
-![ img ](img/0037.png)
