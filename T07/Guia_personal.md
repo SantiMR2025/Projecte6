@@ -21,6 +21,7 @@ Según el material, las directivas se aplican sobre:
 Directivas locales → Default Domain Policy → OUs específicas.  
 
 Esto significa que, si queremos políticas distintas para cada grupo (gestio, gerencia, etc.), deben estar claramente separadas en OUs que contengan sus usuarios.  
+
 Además, para despliegue de software (PDF, páginas 22–38), las políticas se aplican sobre usuarios o equipos, así que conviene separar OUs de usuarios y equipos.  
 ---
 
@@ -36,32 +37,36 @@ OU\_TransLogic\_17 (OU principal) • USERS\_17
 • COMPUTERS\_17  
 – OU\_Clients\_17  
 – OU\_Portatils\_17  
+
 Justificación  
 – USERS\_17 contiene todos los usuarios, divididos por departamento, para aplicar políticas y software distintas.  
+
 – COMPUTERS\_17 separa ordenadores (fijos y portátiles) porque algunas GPO pueden ser por equipo (seguridad, mapa de unidades, etc.).  
+
 – OU\_Admins\_17 permite delegar permisos de forma precisa sobre la OU principal, sin dar acceso al dominio entero.  
 ---
 
-1. Cómo crear estas OUs en Windows Server (explicado desde cero)  
-2. Abrir el panel Server Manager.  
-3. Ir a Tools → Active Directory Users and Computers.  
-4. En el árbol de la izquierda, seleccionar el dominio translogic.local.  
-5. Clic derecho → New → Organizational Unit.  
-6. Crear OU\_TransLogic\_17 (marcar "Protect container from accidental deletion").  
-7. Dentro de OU\_TransLogic\_17:  
+### 1.3. Cómo crear estas OUs en Windows Server (explicado desde cero)  
+
+1. Abrir el panel Server Manager.  
+2. Ir a Tools → Active Directory Users and Computers.  
+3. En el árbol de la izquierda, seleccionar el dominio translogic.local.  
+4. Clic derecho → New → Organizational Unit.  
+5. Crear OU\_TransLogic\_17 (marcar "Protect container from accidental deletion").  
+6. Dentro de OU\_TransLogic\_17:  
    – Crear USERS\_17 y COMPUTERS\_17.  
-8. Dentro de USERS\_17:  
+7. Dentro de USERS\_17:  
    – Crear OU\_Gestio\_17  
    – Crear OU\_Gerencia\_17  
    – Crear OU\_Magatzem\_17  
    – Crear OU\_Admins\_17  
-9. Dentro de COMPUTERS\_17:  
+8. Dentro de COMPUTERS\_17:  
    – Crear OU\_Clients\_17  
    – Crear OU\_Portatils\_17
 
 ---
 
-### 1. Resultado esperado
+### 1.9. Resultado esperado
 
 Cuando abras Active Directory Users and Computers deberías ver:  
 translogic.local  
@@ -76,7 +81,7 @@ translogic.local
 └── OU\_Portatils\_17  
 Si esta estructura coincide, todo el resto de GPO funcionará sin conflictos.
 
-FASE 2 – POLÍTICAS DE SEGURIDAD Y CONTRASEÑAS (GPO)  
+# FASE 2 – POLÍTICAS DE SEGURIDAD Y CONTRASEÑAS (GPO)  
 Objetivo de la fase  
 Configurar tres políticas distintas usando GPO, siguiendo exactamente el modelo explicado en el PDF:
 
@@ -87,7 +92,7 @@ Configurar tres políticas distintas usando GPO, siguiendo exactamente el modelo
 Basado en las secciones de directivas de contraseña del PDF, páginas 7–14.  
 ---
 
-2.1. Política Global: Modificar Default Domain Policy  
+### 2.1. Política Global: Modificar Default Domain Policy  
 Esta política se aplica a **todo el dominio**, ya que las políticas de contraseña deben aplicarse desde allí (PDF, página 7).  
 Requisito:  
 Contraseña mínima: **8 caracteres**.  
@@ -113,7 +118,7 @@ Nota importante
 La Default Domain Policy siempre se usa para contraseña general; cambiarla en otro sitio puede causar conflictos.  
 ---
 
-2.2. Política específica para Gerencia (OU\_Gerencia\_17)  
+### 2.2. Política específica para Gerencia (OU\_Gerencia\_17)  
 Requisitos:  
 Contraseña mínima: 18 caracteres.  
 Caducidad cada 28 días.  
@@ -143,7 +148,7 @@ Pasos:
 
 ---
 
-2.3. Tercera GPO Proactiva (elegida por ti, basada en el PDF)  
+### 2.3. Tercera GPO Proactiva (elegida por ti, basada en el PDF)  
 Según la actividad, debes proponer una mejora realista para una empresa logística.  
 Me baso en los ejemplos del PDF, especialmente la gestión de seguridad y organización del entorno.  
 Propuesta técnica:  
@@ -169,7 +174,7 @@ Cómo implementarla:
 Aunque el PDF no detalla exactamente esta GPO, sigue su línea de permisos, seguridad y políticas para departamentos.  
 ---
 
-2.4. Aplicación y comprobación desde Windows 11  
+### 2.4. Aplicación y comprobación desde Windows 11  
 En el cliente Windows 11 solo necesitas:
 
 1. Conectarlo al dominio.  
@@ -178,11 +183,13 @@ En el cliente Windows 11 solo necesitas:
    gpresult /R  
    Esto está explicado en el PDF (página 5).
 
-FASE 3 – DESPLIEGUE AUTOMATIZADO DE SOFTWARE (GPO)  
+
+# FASE 3 – DESPLIEGUE AUTOMATIZADO DE SOFTWARE (GPO)  
 Objetivo de la fase  
 Configurar dos tipos de despliegue de software mediante Group Policy:
 
 1. Departamento de Gestió (OU\_Gestio\_17): instalar **7zip** de manera **asignada** (instalación automática).  
+
 2. Departamento de Gerència (OU\_Gerencia\_17): ofrecer **Firefox** mediante despliegue **publicado** (el usuario elige instalarlo desde Panel de Control).
 
 Esto debe hacerse estrictamente siguiendo las técnicas del PDF: – Uso de un repositorio compartido llamado soft.  
@@ -191,7 +198,7 @@ Esto debe hacerse estrictamente siguiendo las técnicas del PDF: – Uso de un r
 – Instalación basada en MSI.  
 ---
 
-3.1. Crear el repositorio de software (soft)  
+## 3.1. Crear el repositorio de software (soft)  
 El PDF indica que primero debe existir una carpeta compartida en el servidor donde se almacenarán todos los .msi (páginas 24–28).  
 Pasos:
 
@@ -218,7 +225,7 @@ Siempre se debe usar **ruta de red**:
 nunca unidad local.  
 ---
 
-3.2. Crear GPO para 7zip (asignada) en OU\_Gestio\_17  
+### 3.2. Crear GPO para 7zip (asignada) en OU\_Gestio\_17  
 Lo que dice el PDF:  
 – Instalación asignada \= instalación automática al iniciar sesión (páginas 22–23, 29–33).  
 – Se recomienda aplicarlo a usuarios, no a equipos, para cargar al hacer logon.  
@@ -249,7 +256,7 @@ Resultado esperado en Windows 11
 Al iniciar sesión un usuario del grupo gestio, 7zip se instalará automáticamente (PDF, página 31).  
 ---
 
-3.3. Crear GPO para Firefox (publicada) en OU\_Gerencia\_17  
+### 3.3. Crear GPO para Firefox (publicada) en OU\_Gerencia\_17  
 Lo que dice el PDF:  
 – Publicada \= aparece en "Programas y características / Obtener programas" pero no se instala sola (páginas 33–36).  
 – Solo se puede aplicar a usuarios.  
@@ -277,7 +284,7 @@ Panel de control → Programas → Obtener programas (PDF, página 39).
 No se instalará solo.  
 ---
 
-3.4. Pregunta de consultoría: ¿Cómo crear un .msi desde un .exe?  
+### 3.4. Pregunta de consultoría: ¿Cómo crear un .msi desde un .exe?  
 El PDF explica que las instalaciones automatizadas requieren archivos MSI.  
 Si la aplicación solo proporciona .exe, existen herramientas externas que permiten:  
 – Crear un MSI envolviendo el EXE (reempacar).  
@@ -291,8 +298,7 @@ Para que GPO pueda instalar software automáticamente, este debe estar en format
 Si solo se dispone de EXE, se necesita un repackager que genere un MSI equivalente.  
 ---
 
-3.5. Comprobación desde Windows 11 (como exige el enunciado)
-
+### 3.5. Comprobación desde Windows 11 (como exige el enunciado)
 1. Unir la máquina Windows 11 al dominio.  
 2. Reiniciar.  
 3. Iniciar sesión con un usuario de gestio para que instale 7zip.  
