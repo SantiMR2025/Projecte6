@@ -1,25 +1,30 @@
-FASE 1 – DISEÑO Y PREPARACIÓN DE LA ESTRUCTURA DE UNIDADES ORGANIZATIVAS (OU)  
-Objetivo de la fase  
-Definir y justificar la estructura de OUs que se utilizará a lo largo de toda la práctica del cliente TransLògic S.A., basándonos estrictamente en la información del PDF (directivas de grupo, herencia, ámbito y filtrado).  
-Importante  
+# FASE 1 – DISEÑO Y PREPARACIÓN DE LA ESTRUCTURA DE UNIDADES ORGANIZATIVAS (OU)  
+
+### Objetivo de la fase  
+
+Definir y justificar la estructura de OUs que se utilizará a lo largo de toda la práctica del cliente TransLògic S.A., basándonos estrictamente en la información del PDF (directivas de grupo, herencia, ámbito y filtrado). 
+
+### Importante
 Toda la estructura deberá pensarse para que:  
 – Las GPO se apliquen correctamente según la jerarquía explicada en el PDF (primero dominio, luego OU específicas).  
 – La organización facilite el despliegue de software por departamento.  
 – Se pueda delegar control sin comprometer la seguridad.  
+
 ---
 
-1. Justificación técnica (basado en el PDF)
+### 1.1. Justificación técnica (basado en el PDF)
 
 Según el material, las directivas se aplican sobre:  
 – Todo el dominio  
 – OUs  
 – Y siguen una jerarquía:  
 Directivas locales → Default Domain Policy → OUs específicas.  
+
 Esto significa que, si queremos políticas distintas para cada grupo (gestio, gerencia, etc.), deben estar claramente separadas en OUs que contengan sus usuarios.  
 Además, para despliegue de software (PDF, páginas 22–38), las políticas se aplican sobre usuarios o equipos, así que conviene separar OUs de usuarios y equipos.  
 ---
 
-1. Estructura final recomendada para TransLògic (tu número de lista incluido)
+### 1.2. Estructura final recomendada para TransLògic (tu número de lista incluido)
 
 Dominio: translogic.local  
 OUs raíz:  
@@ -56,7 +61,7 @@ Justificación
 
 ---
 
-1. Resultado esperado
+### 1. Resultado esperado
 
 Cuando abras Active Directory Users and Computers deberías ver:  
 translogic.local  
