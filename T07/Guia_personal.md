@@ -22,7 +22,8 @@ Directivas locales → Default Domain Policy → OUs específicas.
 
 Esto significa que, si queremos políticas distintas para cada grupo (gestio, gerencia, etc.), deben estar claramente separadas en OUs que contengan sus usuarios.  
 
-Además, para despliegue de software (PDF, páginas 22–38), las políticas se aplican sobre usuarios o equipos, así que conviene separar OUs de usuarios y equipos.  
+Además, para despliegue de software, las políticas se aplican sobre usuarios o equipos, así que conviene separar OUs de usuarios y equipos.  
+
 ---
 
 ### 1.2. Estructura final recomendada para TransLògic (tu número de lista incluido)
@@ -44,6 +45,7 @@ Justificación
 – COMPUTERS\_17 separa ordenadores (fijos y portátiles) porque algunas GPO pueden ser por equipo (seguridad, mapa de unidades, etc.).  
 
 – OU\_Admins\_17 permite delegar permisos de forma precisa sobre la OU principal, sin dar acceso al dominio entero.  
+
 ---
 
 ### 1.3. Cómo crear estas OUs en Windows Server (explicado desde cero)  
@@ -90,6 +92,7 @@ Configurar tres políticas distintas usando GPO, siguiendo exactamente el modelo
 3. Crear una tercera GPO “proactiva” de seguridad.
 
 Basado en las secciones de directivas de contraseña del PDF, páginas 7–14.  
+
 ---
 
 ### 2.1. Política Global: Modificar Default Domain Policy  
@@ -112,10 +115,10 @@ Pasos:
    Password Policy  
 5. Modificar:  
    Minimum password length → **8 caracteres**.
-
-Este ajuste se corresponde con lo mostrado en el PDF (páginas 9–11).  
+  
 Nota importante  
 La Default Domain Policy siempre se usa para contraseña general; cambiarla en otro sitio puede causar conflictos.  
+
 ---
 
 ### 2.2. Política específica para Gerencia (OU\_Gerencia\_17)  
@@ -123,7 +126,7 @@ Requisitos:
 Contraseña mínima: 18 caracteres.  
 Caducidad cada 28 días.  
 No activar complejidad.  
-Según PDF (páginas 9–12), las contraseñas largas aumentan seguridad y se pueden aplicar mediante GPO a una OU concreta.  
+Las contraseñas largas aumentan seguridad y se pueden aplicar mediante GPO a una OU concreta.  
 Pasos:
 
 1. En Group Policy Management, ubicarse en:  
@@ -172,6 +175,7 @@ Cómo implementarla:
    Password protect the screen saver → Enabled
 
 Aunque el PDF no detalla exactamente esta GPO, sigue su línea de permisos, seguridad y políticas para departamentos.  
+
 ---
 
 ### 2.4. Aplicación y comprobación desde Windows 11  
@@ -196,6 +200,7 @@ Esto debe hacerse estrictamente siguiendo las técnicas del PDF: – Uso de un r
 – Permisos adecuados.  
 – Elección correcta entre published o assigned.  
 – Instalación basada en MSI.  
+
 ---
 
 ## 3.1. Crear el repositorio de software (soft)  
@@ -223,6 +228,7 @@ Nota importante
 Siempre se debe usar **ruta de red**:  
 \\DC\\soft\\archivo.msi  
 nunca unidad local.  
+
 ---
 
 ### 3.2. Crear GPO para 7zip (asignada) en OU\_Gestio\_17  
@@ -282,6 +288,7 @@ Resultado en Windows 11
 Los usuarios de gerencia verán Firefox disponible en:  
 Panel de control → Programas → Obtener programas (PDF, página 39).  
 No se instalará solo.  
+
 ---
 
 ### 3.4. Pregunta de consultoría: ¿Cómo crear un .msi desde un .exe?  
@@ -296,6 +303,7 @@ Ejemplos típicos (MÁS SENCILLO PARA ESTUDIANTE):
 El concepto clave:  
 Para que GPO pueda instalar software automáticamente, este debe estar en formato MSI.  
 Si solo se dispone de EXE, se necesita un repackager que genere un MSI equivalente.  
+
 ---
 
 ### 3.5. Comprobación desde Windows 11 (como exige el enunciado)
@@ -312,11 +320,12 @@ Si solo se dispone de EXE, se necesita un repackager que genere un MSI equivalen
 5. Comprobar en inicio o menú aplicaciones que 7zip aparece instalado.  
 6. Para gerencia, entrar en Panel de Control → Obtener programas y verificar que Firefox aparece disponible (no instalado).
 
-# **\===================================================================== VERIFICAR GPO APLICADAS EN WINDOWS 11**
+**\===================================================================== VERIFICAR GPO APLICADAS EN WINDOWS 11**
 
 # **(Fase de comprobación – igual que aparece en el PDF, pág. 5\)**
 
 En Windows 11 hay **dos métodos principales** para comprobar las directivas de grupo que se han aplicado a un usuario y a su equipo:  
+
 ---
 
 1. MÉTODO 1 (RECOMENDADO): gpresult /R  
@@ -338,6 +347,7 @@ Pasos:
 Interpretación del resultado: – En la sección CONFIGURACIÓN DE EQUIPO verás las GPO aplicadas al PC.  
 – En la sección CONFIGURACIÓN DE USUARIO verás las GPO aplicadas al usuario actual.  
 Esto es exactamente lo que muestra el PDF (pág. 5), con un ejemplo real.  
+
 ---
 
 1. MÉTODO 2: gpresult /H informe.html  
@@ -353,6 +363,7 @@ Pasos:
 Ventaja:  
 Informe mucho más claro y estructurado.  
 Si no quieres usarlo, quédate solo con el MÉTODO 1, ya que es el único explícitamente mencionado en el PDF.  
+
 ---
 
 1. CÓMO SABER SI UNA GPO SE HA APLICADO CORRECTAMENTE
@@ -368,6 +379,7 @@ Si una GPO **NO aparece**, puede deberse a: – El usuario o equipo no está den
 – No se ha reiniciado (para políticas de equipo).  
 – El MSI no está accesible por red (solo para software).  
 Estos comportamientos están explicados indirectamente en el PDF.  
+
 ---
 
 1. CUANDO DEBES USAR gpupdate /force  
@@ -380,6 +392,7 @@ En Windows 11:
    gpupdate /force
 
 Se recomienda hacerlo después de crear o modificar una GPO.  
+
 ---
 
 1. EJEMPLOS REALES DE LO QUE DEBES VER
