@@ -3,11 +3,6 @@
 
 ## T07: Administració Avançada i Seguretat Corporativa
 
-Alumno: **\[Tu Nombre]**  
-Número de lista: **17**  
-Fecha: **\[13/03/2026]**
-========================
-
 # 1. Introducción
 
 Este documento recoge todos los pasos realizados para la mejora y administración avanzada de la infraestructura Active Directory de **TransLògic S.A.**
