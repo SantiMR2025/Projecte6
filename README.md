@@ -6,9 +6,8 @@
 
 ## Autor
 
-Nom: [Escriu el teu nom aquí]
+Autors: Santiago Moreno i David Hernandez
 
-Formant grups de treball: [Escriu els noms dels membres del grup aquí]
 
 ## Descripció del projecte
 
